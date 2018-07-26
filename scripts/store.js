@@ -14,6 +14,13 @@ const store = (function(){
     this.items = this.items.filter(item => item.id !== id);
   };
 
+  function filterByRating(val) {
+    this.items = this.items.filter( item => {
+      return item.rating >= val;
+    });
+  }
+
+
   const findAndUpdate = function(id, newData) {
     const itemIndex = this.items.findIndex(item => item.id === id);
     Object.assign(this.items[itemIndex], newData);
