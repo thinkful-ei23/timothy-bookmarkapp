@@ -14,5 +14,28 @@ const api = (function(){
         rating:rating
       });
   };
+
+  const updateItem = function(id, updateData, callback){
+    $.ajax({
+      url: `${BASE_URL}/items/${id}`,
+      method: 'PATCH',
+      contentType: 'application/json',
+      data:JSON.stringify(updateData),
+      success: callback
+       
+    });
+  };
+
+  const deleteItem = function(id, callback) {
+    $.ajax({
+      url: `${BASE_URL}/items/${id}`,
+      method: 'DELETE',
+      contentType: 'application/json',
+      success: callback,
+      
+    });
+  };
+
+
   return {getItems , createItem, updateItem, deleteItem };
 }() );
