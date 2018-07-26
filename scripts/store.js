@@ -1,10 +1,11 @@
 'use strict';
-/* global Item */
+
 
 const store = (function(){
   const addItem = function(item) {
-    this.items.push(item);
+    this.items.push(Object.assign(item, {expanded: false}));
   };
+ 
 
   const findById = function(id) {
     return this.items.find(item => item.id === id);
@@ -21,12 +22,12 @@ const store = (function(){
   }
 
 
-  const findAndUpdate = function(id, newData) {
+  /*const findAndUpdate = function(id, newData) {
     const itemIndex = this.items.findIndex(item => item.id === id);
     Object.assign(this.items[itemIndex], newData);
-  };
+  };*/
 
-return {
+  return {
     items: [],
     adding: false,
 
@@ -34,9 +35,9 @@ return {
     addItem,
     findById,
     findAndDelete, 
-    findAndUpdate,
+    //findAndUpdate,
     filterByRating
-};
+  };
 
 
 
@@ -44,4 +45,4 @@ return {
 
 
 
-}() );
+}());

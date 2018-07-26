@@ -1,5 +1,5 @@
 'use strict';
-/* global store, $, api */
+/* global store, $, api  */
 
 const bookmarkList = (function(){
 
@@ -14,10 +14,12 @@ const bookmarkList = (function(){
        </li>`;
        
   }
-  function generateBookmarkItemsString(bookmarkList) {
-    const items = bookmarkList.map((item) => generateItemElement(item));
+  function generateBookmarkItemsString(bookmarks) {
+      console.log(bookmarks);
+    const items = bookmarks.map((item) => generateItemElement(item));
     return items.join('');
   }
+
   
   function generateExpandedView(item){
     return`
@@ -102,6 +104,23 @@ const bookmarkList = (function(){
       }
     });
   }
+
+  function handleAddBookmarkClicked() {
+    $('#js-add-bookmark').on('submit', (function(event) {
+      event.preventDefault();
+      const title = event.currentTarget.title.value;
+      const url = event.currentTarget.url.value;
+      const desc = event.currentTarget.desc.value;
+      const rate = event.currentTarget.rate.value;
+
+      api.createItem(title, url, desc, rate, function(response) {
+        store.addItem(response);
+        store.adding = false;
+        render();
+      });
+    }));
+  }
+
   function handleExpandViewClicked() {
     $('.js-bookmark-list').on('click', '.js-bookmark-list-items', event => {
       const id = getItemIdFromElement(event.currentTarget);
@@ -146,25 +165,28 @@ const bookmarkList = (function(){
       const bookmarkForm = generateCreateBookmarkView();
       $('.js-bookmark-list').prepend(bookmarkForm);
     }
+    
+
     // render the shopping list in the DOM
     console.log('`render` ran');
-    const bookmarkItemsString = generateBookmarkItemsString(bookmarkList);
+    const bookmarkItemsString = generateBookmarkItemsString(items);
     // insert that HTML into the DOM
     $('.js-bookmark-list').html(bookmarkItemsString);
   }
-  handleAddBookmarkClicked();
-  handleDeleteBookmarkClicked();
+  
 
   function bindEventListeners() {
+    
+    handleAddBookmarkClicked();
+    handleDeleteItemClicked();
     handleExpandViewClicked();
     handleCreateBookmarkClicked();
     handleFilterByRatingClicked();
     handleCloseBookmarkClicked();
   }
-// This object contains the only exposed methods from this module:
-return {
-    render: render,
-    bindEventListeners: bindEventListeners,
+  // This object contains the only exposed methods from this module:
+  return {
+    render,
+    bindEventListeners
   };
-
 }());

@@ -1,5 +1,5 @@
 'use strict';
-/* global $ */
+/* global $, ,*/
 const api = (function(){
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/timothy';
   let getItems = function(callback){
@@ -13,6 +13,15 @@ const api = (function(){
         desc:desc,
         rating:rating
       });
+    $.ajax({
+      url: BASE_URL + '/bookmarks',
+      method: 'POST',
+      contentType: 'application/json',
+      data: newItem,
+      success: callback,
+      error: onError
+    });
+  
   };
 
   const updateItem = function(id, updateData, callback){
@@ -24,6 +33,7 @@ const api = (function(){
       success: callback
        
     });
+    
   };
 
   const deleteItem = function(id, callback) {
