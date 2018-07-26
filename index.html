@@ -8,11 +8,35 @@
     <title>Bookmark App</title>
 </head>
 <body>
-    <div>
-        <form action="">
+    <div class="container">
+        <header>
+        <form id="js-create-bookmark-form">
             <button class="header-button js-header-button" type="submit" >CREATE A BOOKMARK</button>
-             
-        </form>
+             </form>
+             <form id="js-filter-bookmark-form" class="filter-bookmark-form">
+                 <fieldset>
+                     <legend>Filter By</legend>
+                     <label for="rating-filter">
+                         <select class="header-select js-header-select">
+                             <option role="option" value="1" id="rating-filter">Rating</option>
+                             <option role="option" value="5" id="rating-filter">5 stars</option>
+                             <option role="option" value="4" id="rating-filter">4 stars</option>
+                             <option role="option" value="3" id="rating-filter">3 stars</option>
+                             <option role="option" value="2" id="rating-filter">2 stars</option>
+                             <option role="option" value="1" id="rating-filter">1 stars</option>
+
+
+
+                         </select>
+                     </label>
+                 </fieldset>
+             </form>
+    </header>
+    <main role="main" class="bookmark-panel js-pannel">
+        <ul class="bookmark-list js-bookmark-list">
+            
+        </ul>
+    </main>
     </div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cuid/1.3.8/browser-cuid.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
