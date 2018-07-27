@@ -2,6 +2,7 @@
 
 
 const store = (function(){
+
   const addItem = function(item) {
     this.items.push(Object.assign(item, {expanded: false}));
   };
@@ -22,15 +23,12 @@ const store = (function(){
   }
 
 
-  /*const findAndUpdate = function(id, newData) {
-    const itemIndex = this.items.findIndex(item => item.id === id);
-    Object.assign(this.items[itemIndex], newData);
-  };*/
+  
 
   return {
     items: [],
     adding: false,
-
+    error: null,
 
     addItem,
     findById,

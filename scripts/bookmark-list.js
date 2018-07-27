@@ -14,9 +14,9 @@ const bookmarkList = (function(){
        </li>`;
        
   }
-  function generateBookmarkItemsString(bookmarks) {
-      console.log(bookmarks);
-    const items = bookmarks.map((item) => generateItemElement(item));
+  function generateBookmarkItemsString(bookmarkList) {
+      console.log(bookmarkList);
+    const items = bookmarkList.map((item) => generateItemElement(item));
     return items.join('');
   }
 
@@ -166,19 +166,19 @@ const bookmarkList = (function(){
       $('.js-bookmark-list').prepend(bookmarkForm);
     }
     
-
-    // render the shopping list in the DOM
-    console.log('`render` ran');
+    handleAddBookmarkClicked();
+    handleDeleteItemClicked();    
+    
     const bookmarkItemsString = generateBookmarkItemsString(items);
     // insert that HTML into the DOM
-    $('.js-bookmark-list').html(bookmarkItemsString);
+    $('.js-bookmark-list').append(bookmarkItemsString);
   }
   
 
   function bindEventListeners() {
     
-    handleAddBookmarkClicked();
-    handleDeleteItemClicked();
+    
+
     handleExpandViewClicked();
     handleCreateBookmarkClicked();
     handleFilterByRatingClicked();
