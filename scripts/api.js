@@ -3,49 +3,29 @@
 const api = (function(){
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/timothy';
   
-  let getItems = function(callback){
+  const getItems = function(callback){
     $.getJSON(`${BASE_URL}/bookmarks`,callback);
   };
-  const createItem = function(title, url, desc, rating, callback, onError){
-    const newItem = JSON.stringify(
-      {
-        title: title,
-        url: url,
-        desc: desc,
-        rating: rating
-      });
+  
+  const createItem = (data, onSuccess, onError) => {
     $.ajax({
-      url: `${BASE_URL}/bookmarks/`,
+      url: 'BASE_URL/bookmarks',
       method: 'POST',
       contentType: 'application/json',
-      data: newItem,
-      success: callback,
+      data: JSON.stringify(data),
+      success: onSuccess,
       error: onError
     });
-  
   };
 
-  const updateItem = function(id, updateData, callback){
+  const findAndDelete = (id, onSuccess) => {
     $.ajax({
-      url: `${BASE_URL}/bookmarks/${id}`,
-      method: 'PATCH',
-      contentType: 'application/json',
-      data:JSON.stringify(updateData),
-      success: callback
-       
+     url: `${BASE_URL}/bookmarks/${id}`,
+        method: 'DELETE',
+        success: onSuccess
     });
-    
-  };
-
-  const deleteItem = function(id, callback) {
-    $.ajax({
-      url: `${BASE_URL}/bookmarks/${id}`,
-      method: 'DELETE',
-      success: callback
-      
-    });
-  };
+};
 
 
-  return {getItems , createItem, updateItem, deleteItem, };
+  return {getItems , createItem, findAndDelete };
 }() );

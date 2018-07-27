@@ -2,12 +2,12 @@
 /* global $, bookmarkList,store,api */
 
 $(document).ready(function() {
-    bookmarkList.bindEventListeners();
+  bookmarkList.bindEventListeners();
+  bookmarkList.render();
+  api.getItems((items) => {
+    items.forEach((item) => store.addItem(item));
     bookmarkList.render();
-    api.getItems((items) => {
-      items.forEach((item) => store.addItem(item));
-      bookmarkList.render();
-    });
+  });
     
-  }); 
+}); 
   

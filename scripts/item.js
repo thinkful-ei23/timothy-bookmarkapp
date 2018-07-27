@@ -1,24 +1,19 @@
 'use strict';
 /* global cuid */
 
-// eslint-disable-next-line no-unused-vars
-const Item = (function(){
-
-  const validateName = function(name) {
-    if (!name) throw new TypeError('Name must not be blank');
-  };
-
-  const create = function(name) {
+const Item = (function() {
+  const create = function(input) {
     return {
-      id: cuid(),
-      name,
-      checked: false
+      id: input.id,
+      title: input.title,
+      url: input.url,
+      desc: input.desc,
+      rating: input.rating,
+      expanded: false
     };
   };
 
   return {
-    validateName,
-    create,
+    create
   };
-  
 }());
