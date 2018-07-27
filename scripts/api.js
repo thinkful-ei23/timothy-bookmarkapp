@@ -41,12 +41,11 @@ const api = (function(){
     $.ajax({
       url: `${BASE_URL}/bookmarks/${id}`,
       method: 'DELETE',
-      contentType: 'application/json',
-      success: callback,
+      success: callback
       
     });
   };
 
 
-  return {getItems , createItem, updateItem, deleteItem };
+  return {getItems , createItem, updateItem, deleteItem, };
 }() );

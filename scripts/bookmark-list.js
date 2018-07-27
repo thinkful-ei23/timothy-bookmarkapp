@@ -9,7 +9,7 @@ const bookmarkList = (function(){
        <h3 class="list-title js-list-title">${item.title}</h3>
        <a class="list-link js-list-link" href="${item.url}" target="_blank">${item.url}</a>
        <section class="star-rating js-star-rating">
-       <p class="star-number js-star-number">{item.rating} STAR</p>
+       <p class="star-number js-star-number">${item.rating} STAR</p>
        </section>
        </li>`;
        
@@ -37,7 +37,7 @@ const bookmarkList = (function(){
             <button class="visit-site-button js-visit-site-button" >VISIT</button></a>
         </div>
         <form id="js-delete-bookmark">
-          <button class="delete-bookmark-button js-item-delete" type="submit" >DELETE</button>
+          <button class="delete-bookmark-button js-delete-bookmark-button" type="submit" >DELETE</button>
         </form>
       </li>`;
   }
@@ -135,15 +135,18 @@ const bookmarkList = (function(){
   }
   function handleDeleteItemClicked() {
     // like in `handleItemCheckClicked`, we use event delegation
-    $('.js-bookmark-list').on('click', '.js-item-delete', event => {
+    $('.js-bookmark-list').on('click', '.js-delete-bookmark-button', event => {
+      event.preventDefault();
       // get the index of the item in store.items
-      const id = getItemIdFromElement(event.currentTarget);
+      const id = $(event.currentTarget.parentElement.parentElement).data('item-id');
       // delete the item
-      api.deleteItem(id, store.findAndDelete(id));
+      api.deleteItem(id, function(){
+        store.findAndDelete(id);
       // render the updated shopping list
       render();
     });
-  }
+  });
+}
   function getItemIdFromElement(item) {
     return $(item)
       .closest('.js-bookmark-list-items')
@@ -167,9 +170,9 @@ const bookmarkList = (function(){
     }
     
     handleAddBookmarkClicked();
-    handleDeleteItemClicked();    
-    
-    const bookmarkItemsString = generateBookmarkItemsString(items);
+    handleDeleteItemClicked(); 
+
+        const bookmarkItemsString = generateBookmarkItemsString(items);
     // insert that HTML into the DOM
     $('.js-bookmark-list').append(bookmarkItemsString);
   }
@@ -178,7 +181,7 @@ const bookmarkList = (function(){
   function bindEventListeners() {
     
     
-
+      
     handleExpandViewClicked();
     handleCreateBookmarkClicked();
     handleFilterByRatingClicked();

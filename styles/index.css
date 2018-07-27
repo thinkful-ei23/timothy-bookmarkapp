@@ -47,7 +47,7 @@ input[type=submit] {
   border: solid 2px black;
   border-radius: 7px;
   float: left;
-  align: top;
+  box-align: top;
 }
 
 select {

@@ -33,7 +33,6 @@ const store = (function(){
     addItem,
     findById,
     findAndDelete, 
-    //findAndUpdate,
     filterByRating
   };
 
