@@ -1,64 +1,56 @@
-'use strict';
+'use strict'
+/* global Item */
 
-
-const store = (function(){
-  const items = [];
+const store = (function() {
+    const items = [];
     const filterRating = 0;
     const addItemForm = false;
     const error = null;
 
-    unction addItem(input) {
-      Item.create(input);
-      this.items = [...this.items, {...input}];
-  };
-  
-  function toggleAddItemForm() {
-    this.addItemForm = !this.addItemForm;
-};
+    function findAndDelete(id) {
+        this.items = this.items.filter(item => {
+            return item.id !== id;
+        });
+    };
 
-function setFilterRating(val) {
-  this.filterRating = val;
-};
+    function setError(error) {
+        this.error = error.message;
+    };
 
-  const findById = function(id) {
-    return this.items.find(item => item.id === id);
-  };
+    function setFilterRating(val) {
+        this.filterRating = val;
+    };
 
-  const findAndDelete = function(id) {
-    this.items = this.items.filter(item => item.id !== id);
-  };
+    function toggleAddItemForm() {
+        this.addItemForm = !this.addItemForm;
+    };
 
-  function filterByRating(val) {
-    this.items = this.items.filter( item => {
-      return item.rating >= val;
-    });
-  }
-   
-  function toggleExpanded(id) {
-    const currentItem = this.items.find(item => item.id === id);
-    currentItem.expanded = !currentItem.expanded;
-};
-  
+    function toggleExpanded(id) {
+        const currentItem = this.items.find(item => item.id === id);
+        currentItem.expanded = !currentItem.expanded;
+    };
 
-  return {
-    items,
-    filterRating,
-    addItemForm,
-    error,   
+    function addItem(input) {
+        Item.create(input);
+        this.items = [...this.items, {...input}];
+    };
+
+    function resetError(){
+        this.error = null;
+    };
     
-    addItem,
-    toggleExpanded,
-    toggleAddItemForm,
-    setFilterRating,
-    findAndDelete,
-    setError,
-    resetError
-  };
-
-
-
-
-
-
-
+    return {
+        items,
+        filterRating,
+        addItemForm,
+        error,   
+        
+        addItem,
+        toggleExpanded,
+        toggleAddItemForm,
+        setFilterRating,
+        findAndDelete,
+        setError,
+        resetError
+    };
 }());

@@ -9,7 +9,7 @@ const api = (function(){
   
   const createItem = (data, onSuccess, onError) => {
     $.ajax({
-      url: 'BASE_URL/bookmarks',
+      url: `${BASE_URL}/bookmarks`,
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(data),

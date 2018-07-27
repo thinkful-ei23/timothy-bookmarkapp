@@ -1,37 +1,38 @@
 'use strict';
-/* global store, $, api  */
+/* global store, api, $ */
 
-const bookmarkList = (function(){
+const bookmarkList = (function() {
 
-  function generateItemElement(item){
-    if(!item.expanded) {
-    return `
-            <li class="item-element" data-item-id="${item.id}">
-                <button class="title">${item.title}</button>
-                <p>Rating: ${item.rating}</p>
-            </li> 
-        `
-    };
-    if (item.expanded) {
-        return `
-            <li class="item-element" data-item-id="${item.id}">
-                <button class="title" type="button">${item.title}</button>
-                <p>Rating: ${item.rating}</p>
-                <p>Description: ${item.desc}</p>
-                <a href="${item.url} class="website-link">Visit Site</a>
-                <button class="delete-bookmark" type="button">Delete</button>
-            </li>    
-        `
-    }; 
-};
-  function generateBookmarkItemsString(bookmarkList) {
-    console.log(bookmarkList);
-    const items = bookmarkList.map((item) => generateItemElement(item));
+
+  function generateBookmarkString(bookmarkList) { 
+    const items = bookmarkList.map((item) => generateItemElement(item));  
     return items.join('');
   }
 
-function generateAddBookmarkString() {
-        return `
+  function generateItemElement(item){
+    if(!item.expanded) {
+      return `
+                <li class="item-element" data-item-id="${item.id}">
+                    <button class="title">${item.title}</button>
+                    <p>Rating: ${item.rating}</p>
+                </li> 
+            `;
+    }
+    if (item.expanded) {
+      return `
+                <li class="item-element" data-item-id="${item.id}">
+                    <button class="title" type="button">${item.title}</button>
+                    <p>Rating: ${item.rating}</p>
+                    <p>Description: ${item.desc}</p>
+                    <a href="${item.url} class="website-link">Visit Site</a>
+                    <button class="delete-bookmark" type="button">Delete</button>
+                </li>    
+            `;
+    } 
+  }
+
+  function generateAddBookmarkString() {
+    return `
         <div class="create-bookmark">
             <form class="create-bookmark-form">
                 <h2>Create a Bookmark</h2>
@@ -55,88 +56,141 @@ function generateAddBookmarkString() {
                 </div>
             </form>
         </div>
-        `
-    };
-    function generateTopMenuHtml() {
-      return `
-          <div class="main-menu">
-              <button class="add-button">Add Bookmark</button>
-              <div class="dropdown">
-                  <label for="rating-dropdown">Filter Minimum Rating</label>  
-                  <select class="dropdown-content">
-                      <option value="0">All</option>
-                      <option value="1" ${store.filterRating == 1 ? "selected":""}>Rating: 1</option>
-                      <option value="2" ${store.filterRating == 2 ? "selected":""}>Rating: 2</option>
-                      <option value="3" ${store.filterRating == 3 ? "selected":""}>Rating: 3</option>
-                      <option value="4" ${store.filterRating == 4 ? "selected":""}>Rating: 4</option>
-                      <option value="5" ${store.filterRating == 5 ? "selected":""}>Rating: 5</option>
-                  </select>
-              </div>
-          </div>         
-      `
-  };
-  
-  
-  function getItemIdFromElement(item) {
-    return $(item)
-      .closest('.js-bookmark-list-items')
-      .data('item-id');
+        `;
   }
+
+  function generateTopMenuHtml() {
+    return `
+            <div class="main-menu">
+                <button class="add-button">Add Bookmark</button>
+                <div class="dropdown">
+                    <label for="rating-dropdown">Filter Minimum Rating</label>  
+                    <select class="dropdown-content">
+                        <option value="0">All</option>
+                        <option value="1" ${store.filterRating == 1 ? 'selected':''}>Rating: 1</option>
+                        <option value="2" ${store.filterRating == 2 ? 'selected':''}>Rating: 2</option>
+                        <option value="3" ${store.filterRating == 3 ? 'selected':''}>Rating: 3</option>
+                        <option value="4" ${store.filterRating == 4 ? 'selected':''}>Rating: 4</option>
+                        <option value="5" ${store.filterRating == 5 ? 'selected':''}>Rating: 5</option>
+                    </select>
+                </div>
+            </div>         
+        `;
+  }
+
+  function getItemIdFromElement(item) {
+    return $(item).closest('.item-element').data('item-id');
+  }
+
   function handleNewItemForm() {
     $('.top-menu').on('click', '.add-button', function(event) {
-        event.preventDefault();
+      event.preventDefault();
+      store.toggleAddItemForm();
+      render();
+    });
+  }
+  function handleConfirmAdd() {
+    $('.top-menu').on('submit', '.create-bookmark-form', function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const data = {};
+      formData.forEach(function(value, key) {
+        data[key] = value;    
+      });
+      api.createItem(data, function(bookmark) {
+        store.addItem(bookmark);
         store.toggleAddItemForm();
         render();
+      },
+      function (error) {
+        store.setError(JSON.parse(error.responseText));
+        render();
+      }); 
     });
-};
   }
-  function render() {
+
+  function handleCancelAdd() {
+    $('.top-menu').on('click', '.cancel-button', function(event) {
+      event.preventDefault();
+      store.toggleAddItemForm();
+      render();
+    });
+  }
+
+  function handleTitleClick() {
+    $('.bookmark-list').on('click', '.title', function(event) {
+      event.preventDefault();
+      const id = getItemIdFromElement(event.currentTarget);
+      store.toggleExpanded(id);
+      render();
+    });
+  }
+
+  function handleDeleteItem() {
+    $('.bookmark-list').on('click', '.delete-bookmark', function(event) {
+      event.preventDefault();
+      const id = getItemIdFromElement(event.currentTarget);
+      api.findAndDelete(id, function(bookmark) {
+        store.findAndDelete(id);
+        render();
+      });
+    });
+  }
+
+  function handleFilterByRating() {
+    $('.top-menu').on('change', '.dropdown-content', function(event) {
+      const val = $(event.currentTarget).val();
+      store.setFilterRating(val);
+      render();
+    });
+  }
+  function render(){
+    
+    if (store.error) {
+      alert(store.error);
+      store.resetError();
+    }
+                
     let items = store.items;
+    
     if(store.addItemForm) {
       const displayAddBookmarkForm = generateAddBookmarkString();
       $('.top-menu').html(displayAddBookmarkForm);
-        };
-        if(!store.addItemForm) {
-          const displayTopMenu = generateTopMenuHtml();
-          $('.top-menu').html(displayTopMenu);
-      };
-      if(store.filterRating > 0) {
-        items = store.items.filter(item => item.rating >= store.filterRating);
-    };
+    }
+        
+    if(!store.addItemForm) {
+      const displayTopMenu = generateTopMenuHtml();
+      $('.top-menu').html(displayTopMenu);
+    }
+
+    if(store.filterRating > 0) {
+      items = store.items.filter(item => item.rating >= store.filterRating);
+    }
 
     if(store.searchTerm) {
-        items = store.items.filter(item => item.title.includes(store.searchTerm));
-    };
+      items = store.items.filter(item => item.title.includes(store.searchTerm));
+    }
 
     if(store.searchTerm = '') {
-        items = store.items;
-    };
-    
+      items = store.items;
+    }
+        
     const bookmarkListItemsString = generateBookmarkString(items);
     $('.bookmark-list').html(bookmarkListItemsString);
-    }
-    
-    handleAddBookmarkClicked();
-    handleDeleteItemClicked(); 
-
-    const bookmarkItemsString = generateBookmarkItemsString(items);
-    // insert that HTML into the DOM
-    $('.bookmarkForm').html(bookmarkItemsString);
   }
-  
+
 
   function bindEventListeners() {
-    
-    
-      
-    handleExpandViewClicked();
-    handleCreateBookmarkClicked();
-    handleFilterByRatingClicked();
-    handleCloseBookmarkClicked();
+    handleNewItemForm();
+    handleConfirmAdd();
+    handleCancelAdd();
+    handleTitleClick();
+    handleDeleteItem();
+    handleFilterByRating();
   }
-  // This object contains the only exposed methods from this module:
+
   return {
     render,
-    bindEventListeners
+    bindEventListeners,
   };
 }());

@@ -1,5 +1,5 @@
 'use strict';
-/* global cuid */
+/* global .Item, */
 
 const Item = (function() {
   const create = function(input) {
