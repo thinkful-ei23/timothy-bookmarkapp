@@ -35,13 +35,13 @@ input[type=text], input[type=number]{
 
 .title {
   border: none;
-  background-color: blue;
+  background-color: white;
   text-decoration: underline;
   font-size: 20px
 }
 
 .title:hover{
-  color: red;
+  color: blue;
 }
 
 .bookmark-list {
