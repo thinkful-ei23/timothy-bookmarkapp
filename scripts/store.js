@@ -2,7 +2,10 @@
 /* global Item */
 
 const store = (function() {
-    const items = [];
+    const items = api.getItems((items) => {
+        items.forEach((item) => addItem(item));
+        
+    }) || [];
     const filterRating = 0;
     const addItemForm = false;
     const error = null;
